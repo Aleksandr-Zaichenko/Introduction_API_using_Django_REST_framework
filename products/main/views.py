@@ -22,7 +22,10 @@ class ProductDetailsView(APIView):
         """реализуйте получение товара по id, если его нет, то выдайте 404
         реализуйте сериализацию полученных данных
         отдайте отсериализованные данные в Response"""
-        product = Product.objects.get(id=product_id)
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product not found'}, status=404)
         pr_det = ProductDetailsSerializer(instance=product)
         return Response(pr_det.data)
 
@@ -34,4 +37,9 @@ class ProductFilteredReviews(APIView):
         реализуйте получение отзывов по конкретному товару с определённой оценкой
         реализуйте сериализацию полученных данных
         отдайте отсериализованные данные в Response"""
-        pass
+        mark = request.GET.get('mark')
+        reviews = Review.objects.filter(product_id=product_id)
+        if mark:
+            reviews = reviews.filter(mark=mark)
+        ser = ReviewSerializer(reviews, many=True)
+        return Response(ser.data)

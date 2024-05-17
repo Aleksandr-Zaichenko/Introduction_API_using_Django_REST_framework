@@ -13,7 +13,7 @@ class ProductListSerializer(serializers.Serializer):
 
 
 class ProductDetailsSerializer(serializers.ModelSerializer):
-    reviews = ReviewSerializer(many=True, read_only=True)
+    comments = ReviewSerializer(many=True, read_only=True)
     class Meta:
         model = Product
-        fields = ['title', 'description', 'price', 'reviews']
+        fields = ['title', 'description', 'price', 'comments']
